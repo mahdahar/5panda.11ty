@@ -1,0 +1,22 @@
+---
+layout: base.njk
+title: Home - 5Panda
+---
+
+<div class="hero">
+    <h1>Building the Future,<br>One Line at a Time.</h1>
+    <p>Welcome to my digital garden. Here I document my journey, share learnings, and showcase my projects.</p>
+</div>
+
+<h2>Latest Posts</h2>
+<ul class="post-list">
+    {%- for post in collections.post | reverse -%}
+    <li class="post-card">
+        <a href="{{ post.url }}">
+            <span class="post-meta">{{ post.date.toDateString() }}</span>
+            <h2>{{ post.data.title }}</h2>
+            <p>{{ post.data.description }}</p>
+        </a>
+    </li>
+    {%- endfor -%}
+</ul>
