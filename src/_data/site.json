@@ -1,0 +1,15 @@
+{
+  "name": "5Panda",
+  "description": "Developer Portfolio, Blog & Documentation",
+  "url": "https://5panda.dev",
+  "author": {
+    "name": "5Panda",
+    "email": "hello@5panda.dev",
+    "url": "https://5panda.dev"
+  },
+  "social": {
+    "github": "https://github.com/5panda",
+    "twitter": "https://twitter.com/5panda",
+    "linkedin": "https://linkedin.com/in/5panda"
+  }
+}

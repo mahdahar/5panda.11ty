@@ -1,0 +1,79 @@
+---
+layout: base.njk
+title: Proposals - 5Panda
+description: Project proposals and innovative ideas
+---
+
+<section class="py-16">
+  <div
+    class="section-container">
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <span class="badge badge-primary badge-outline badge-lg mb-4">Proposals</span>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Project Proposals</h1>
+      <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+        Innovative ideas and detailed project proposals.
+      </p>
+    </div>
+    <!-- Proposals List -->
+    <div class="max-w-3xl mx-auto space-y-6">
+      {% for post in collections.posts %}
+        <a href="{{ post.url }}" class="post-card block group">
+          <div class="flex flex-col md:flex-row md:items-start gap-4">
+            <div
+              class="flex-1">
+              <!-- Meta -->
+              <div class="flex flex-wrap items-center gap-3 mb-3">
+                <time datetime="{{ post.date | dateFormat('iso') }}" class="text-sm text-base-content/50">
+                  {{ post.date | dateFormat('full') }}
+                </time>
+                <span class="text-base-content/30">•</span>
+                <span class="text-sm text-base-content/50">{{ post.content | readingTime }}</span>
+                {% for tag in post.data.tags %}
+                  {% if tag != "post" and tag != "posts" %}
+                    <span class="badge badge-ghost badge-sm">{{ tag }}</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <!-- Title -->
+              <h2 class="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{{ post.data.title }}</h2>
+              <!-- Description -->
+              <p class="text-base-content/70">{{ post.data.description }}</p>
+            </div>
+            <!-- Arrow -->
+            <div class="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-base-300/50 group-hover:bg-primary/20
+                transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 text-base-content/50 group-hover:text-primary transition-colors"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+        </a>
+      {% else %}
+        <div class="text-center py-16">
+          <div class="glass-card p-8 max-w-md mx-auto">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-16 w-16 mx-auto text-base-content/30 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <h3 class="text-xl font-bold mb-2">No proposals yet</h3>
+            <p class="text-base-content/60">Project proposals will appear here once they're added.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
