@@ -1,0 +1,81 @@
+---
+layout: base.njk
+title: The 5Panda Team
+description: Meet the innovative minds behind 5Panda.
+---
+
+<div class="hero-gradient min-h-[35vh] flex items-center justify-center relative overflow-hidden">
+  <div class="text-center z-10 px-4">
+    <h1 class="text-5xl md:text-7xl font-bold mb-4">Meet the
+      <span class="gradient-text">Squad</span>
+    </h1>
+    <p class="text-xl text-base-content/70">The pandas building the future.</p>
+  </div>
+  <!-- Background bubbles -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-10 left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl animate-float"></div>
+    <div class="absolute bottom-10 right-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl animate-float animate-delay-200"></div>
+  </div>
+</div>
+<section
+  class="py-16 section-container">
+  <!-- Team Photo -->
+  <div class="max-w-5xl mx-auto mb-20 animate-slide-up">
+    <div class="transform hover:scale-[1.01] transition-transform duration-500">
+      <img
+        src="/assets/images/team_v2.png"
+        alt="5Panda Team: Alam, Haris, Bambang, Irham, Zaka"
+        class="w-full h-auto rounded-3xl shadow-2xl">
+    </div>
+  </div>
+  <!-- Individual Bios (Text Fallback / Accessible Content) -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    <!-- Alam -->
+    <div class="card bg-base-100/50 hover:bg-base-100 border border-base-200 hover:border-primary/50 transition-all duration-300
+        hover:-translate-y-2 group">
+      <div class="card-body">
+        <h2 class="card-title text-2xl group-hover:text-primary transition-colors">🤓 Alam</h2>
+        <div class="badge badge-primary badge-outline">UI/UX & Supervisor</div>
+        <p class="text-base-content/70 mt-2">The visionary with the glasses. Guiding the team and crafting perfect user
+          experiences.</p>
+      </div>
+    </div>
+    <!-- Haris -->
+    <div class="card bg-base-100/50 hover:bg-base-100 border border-base-200 hover:border-secondary/50 transition-all duration-300
+        hover:-translate-y-2 group">
+      <div class="card-body">
+        <h2 class="card-title text-2xl group-hover:text-secondary transition-colors">🎧 Haris</h2>
+        <div class="badge badge-secondary badge-outline">The Vibecoder</div>
+        <p class="text-base-content/70 mt-2">Writing code that hits differently. Bringing the good vibes to the dev cycle.</p>
+      </div>
+    </div>
+    <!-- Bambang -->
+    <div class="card bg-base-100/50 hover:bg-base-100 border border-base-200 hover:border-warning/50 transition-all duration-300
+        hover:-translate-y-2 group">
+      <div class="card-body">
+        <h2 class="card-title text-2xl group-hover:text-warning transition-colors">🔍 Bambang</h2>
+        <div class="badge badge-warning badge-outline">UI/UX & Tester</div>
+        <p class="text-base-content/70 mt-2">Quality assurance expert. Ensuring every pixel and interaction is flawless.</p>
+      </div>
+    </div>
+    <!-- Irham -->
+    <div class="card bg-base-100/50 hover:bg-base-100 border border-base-200 hover:border-success/50 transition-all duration-300
+        hover:-translate-y-2 group">
+      <div class="card-body">
+        <h2 class="card-title text-2xl group-hover:text-success transition-colors">🕶️ Irham</h2>
+        <div class="badge badge-success badge-outline">Frontend Dev</div>
+        <p class="text-base-content/70 mt-2">Bringing designs to life with code. Always rocking the glasses.</p>
+      </div>
+    </div>
+    <!-- Zaka -->
+    <div class="card bg-base-100/50 hover:bg-base-100 border border-base-200 hover:border-error/50 transition-all duration-300
+        hover:-translate-y-2 group">
+      <div class="card-body">
+        <h2 class="card-title text-2xl group-hover:text-error transition-colors">👓 Zaka</h2>
+        <div class="badge badge-error badge-outline">Junior Backend Dev</div>
+        <p class="text-base-content/70 mt-2">Building the engine room. Young talent with a focus on server-side logic.</p>
+      </div>
+    </div>
+  </div>
+</section>

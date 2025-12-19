@@ -57,6 +57,13 @@ module.exports = function (eleventyConfig) {
     });
   });
 
+  // CLQMS collection sorted by order
+  eleventyConfig.addCollection("clqms", function (collectionApi) {
+    return collectionApi.getFilteredByTag("clqms").sort((a, b) => {
+      return (Number(a.data.order) || 99) - (Number(b.data.order) || 99);
+    });
+  });
+
   return {
     dir: {
       input: "src",

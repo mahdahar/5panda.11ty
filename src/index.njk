@@ -1,7 +1,7 @@
 ---
 layout: base.njk
-title: 5Panda - Project Proposals
-description: Innovative project ideas and proposals
+title: 5Panda - Portfolio
+description: Innovative projects and ideas
 ---
 
 <!-- Hero Section -->
@@ -17,37 +17,39 @@ description: Innovative project ideas and proposals
   <div class="section-container relative z-10">
     <div class="max-w-4xl mx-auto text-center">
       <div class="animate-slide-up">
-        <span class="badge badge-primary badge-outline badge-lg mb-6">Project Proposals</span>
+        <span class="badge badge-primary badge-outline badge-lg mb-6">Development Team</span>
         <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-          Ideas That<br>
-            <span class="gradient-text">Shape Tomorrow.</span>
+          Building the<br>
+            <span class="gradient-text">Future of Tech.</span>
           </h1>
           <p class="text-xl md:text-2xl text-base-content/70 mb-10 max-w-2xl mx-auto">
-            Innovative project proposals and concepts. Explore ideas that push boundaries and create impact.
+            We are a team of passionate developers, designers, and innovators crafting digital experiences that matter.
           </p>
           <div class="flex flex-wrap justify-center gap-4">
-            <a href="/blog/" class="btn btn-primary btn-lg gap-2 animate-glow">
+            <a href="/team/" class="btn btn-primary btn-lg gap-2 animate-glow">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7
+                    20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014
+                    0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
               </svg>
-              View Proposals
+              Meet the Team
             </a>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <!-- Latest Proposals Section -->
+  <!-- Portfolio Section -->
   <section class="py-20">
     <div class="section-container">
       <div class="text-center mb-12">
-        <span class="badge badge-accent badge-outline mb-4">Latest</span>
-        <h2 class="text-3xl md:text-4xl font-bold mb-4">Recent Proposals</h2>
-        <p class="text-base-content/70 max-w-2xl mx-auto">Browse through the latest project ideas and proposals</p>
+        <span class="badge badge-accent badge-outline mb-4">Portfolio</span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Work</h2>
+        <p class="text-base-content/70 max-w-2xl mx-auto">Explore our latest projects and technical solutions</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {% for post in collections.posts | head(4) %}
@@ -77,15 +79,15 @@ description: Innovative project ideas and proposals
                   stroke-width="1.5"
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
               </svg>
-              <h3 class="text-xl font-bold mb-2">No proposals yet</h3>
-              <p class="text-base-content/60">Project proposals will appear here once they're added.</p>
+              <h3 class="text-xl font-bold mb-2">No projects yet</h3>
+              <p class="text-base-content/60">Projects will appear here once they're added.</p>
             </div>
           </div>
         {% endfor %}
       </div>
       {% if collections.posts.length > 4 %}
         <div class="text-center mt-10">
-          <a href="/blog/" class="btn btn-outline btn-primary">View All Proposals</a>
+          <a href="/blog/" class="btn btn-outline btn-primary">View All Projects</a>
         </div>
       {% endif %}
     </div>

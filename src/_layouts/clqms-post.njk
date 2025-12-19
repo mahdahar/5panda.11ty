@@ -1,0 +1,82 @@
+---
+layout: base.njk
+---
+
+<div class="section-container py-12 animate-slide-up">
+  <div
+    class="flex flex-col lg:flex-row gap-12">
+    <!-- Sidebar Navigation -->
+    <aside class="lg:w-1/4">
+      <div class="sticky top-24 bg-base-200/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2
+                2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          Updates
+        </h3>
+        <nav class="space-y-1">
+          <a
+            href="/blog/clqms01/"
+            class="block px-3 py-2 rounded-lg text-sm transition-colors {% if '/blog/clqms01/' == page.url %}bg-primary/10
+              text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300
+              hover:text-base-content{% endif %}">
+            Overview
+          </a>
+          {% for post in collections.clqms %}
+            <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-primary/10 text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+              {{ post.data.title }}
+            </a>
+          {% endfor %}
+        </nav>
+      </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="lg:w-3/4 min-w-0">
+      <article>
+        <!-- Post header -->
+        <header class="mb-10">
+          <div class="flex flex-wrap gap-2 mb-4">
+            {% for tag in tags %}
+              {% if tag != "post" and tag != "posts" and tag != "clqms" %}
+                <span class="badge badge-primary badge-outline">{{ tag }}</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ title }}</h1>
+          <div class="flex flex-wrap items-center gap-4 text-base-content/60">
+            <time datetime="{{ date | dateFormat('iso') }}" class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              {{ date | dateFormat('full') }}
+            </time>
+            <span class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              {{ content | readingTime }}
+            </span>
+          </div>
+        </header>
+        <!-- Post content -->
+        <div class="prose-custom max-w-none">
+          {{ content | safe }}
+        </div>
+      </article>
+    </main>
+  </div>
+</div>
