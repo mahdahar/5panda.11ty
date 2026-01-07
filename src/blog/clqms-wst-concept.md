@@ -2,7 +2,7 @@
 title: "Project Pandaria: Next-Gen LIS Architecture"
 description: "An offline-first, event-driven architecture concept for the CLQMS."
 date: 2025-12-19
-order: 6
+order: 8
 tags:
   - posts
   - clqms

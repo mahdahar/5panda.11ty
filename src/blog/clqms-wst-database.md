@@ -2,7 +2,7 @@
 title: "Edge Workstation: SQLite Database Schema"
 description: "Database design for the offline-first smart workstation."
 date: 2025-12-19
-order: 7
+order: 9
 tags:
   - posts
   - clqms
