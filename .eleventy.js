@@ -57,10 +57,22 @@ module.exports = function (eleventyConfig) {
     });
   });
 
+  // Projects collection (blog posts + CLQMS projects)
+  eleventyConfig.addCollection("projects", function (collectionApi) {
+    const blogPosts = collectionApi.getFilteredByGlob("src/blog/**/*.md");
+    const clqmsPosts = collectionApi.getFilteredByTag("clqms");
+
+    const allProjects = [...blogPosts, ...clqmsPosts].sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+    return allProjects;
+  });
+
   // CLQMS collection sorted by order
   eleventyConfig.addCollection("clqms", function (collectionApi) {
     return collectionApi.getFilteredByTag("clqms").sort((a, b) => {
-      return (Number(a.data.order) || 99) - (Number(b.data.order) || 99);
+      return (Number(a.data.order) ?? 99) - (Number(b.data.order) ?? 99);
     });
   });
 

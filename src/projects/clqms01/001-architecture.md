@@ -1,17 +1,16 @@
-﻿---
-title: "CLQMS: v1.0 Architecture Finalized"
-description: "The core architecture for the CLQMS system has been finalized, featuring a modular API design."
-date: 2025-12-20
-order: 1
-tags:
-  - posts
-  - clqms
+---
 layout: clqms-post.njk
+tags: clqms
+title: "CLQMS: v1.0 Architecture Finalized"
+date: 2025-12-01
+order: 1
 ---
 
-# Architecture Overview
+# CLQMS: v1.0 Architecture Finalized
 
-We have finalized the v1.0 architecture for the Clinical Laboratory Quality Management System (CLQMS). 
+## Architecture Overview
+
+We have finalized the v1.0 architecture for the Clinical Laboratory Quality Management System (CLQMS).
 
 ## Key Decisions
 

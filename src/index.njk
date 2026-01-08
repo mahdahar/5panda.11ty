@@ -92,3 +92,34 @@ description: Innovative projects and ideas
       {% endif %}
     </div>
   </section>
+
+  <!-- CLQMS Projects Section -->
+  {% if collections.clqms.length > 0 %}
+  <section class="py-20 bg-base-200/30">
+    <div class="section-container">
+      <div class="text-center mb-12">
+        <span class="badge badge-secondary badge-outline mb-4">CLQMS</span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Project Documentation</h2>
+        <p class="text-base-content/70 max-w-2xl mx-auto">Technical documentation and architecture for CLQMS v1.0</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {% for post in collections.clqms | head(4) %}
+          <a href="{{ post.url }}" class="post-card group">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-sm text-base-content/50">CLQMS</span>
+              <span class="text-base-content/30">•</span>
+              <span class="text-sm text-base-content/50">{{ post.content | readingTime }}</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2 group-hover:text-secondary transition-colors">{{ post.data.title }}</h3>
+            <p class="text-base-content/70">{{ post.data.description | excerpt(120) }}</p>
+          </a>
+        {% endfor %}
+      </div>
+      {% if collections.clqms.length > 4 %}
+        <div class="text-center mt-10">
+          <a href="/clqms/" class="btn btn-outline btn-secondary">View All Documentation</a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}

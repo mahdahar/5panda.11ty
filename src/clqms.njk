@@ -1,0 +1,41 @@
+---
+layout: base.njk
+title: "CLQMS Documentation"
+description: "Clinical Laboratory Quality Management System documentation"
+---
+
+<!-- Hero Section -->
+<section class="py-20 bg-base-200/30">
+  <div class="section-container">
+    <div class="text-center mb-12">
+      <span class="badge badge-secondary badge-outline mb-4">CLQMS</span>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Project Documentation</h1>
+      <p class="text-base-content/70 max-w-2xl mx-auto">
+        Technical documentation, API references, and architectural decisions for CLQMS v1.0
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Documentation List -->
+<section class="py-20">
+  <div class="section-container">
+    <div class="max-w-4xl mx-auto">
+      {% for post in collections.clqms %}
+        <a href="{{ post.url }}" class="post-card group block mb-6">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-sm text-base-content/50">CLQMS</span>
+            {% if post.data.order %}
+            <span class="text-base-content/30">•</span>
+            <span class="text-sm text-base-content/50">Order: {{ post.data.order }}</span>
+            {% endif %}
+            <span class="text-base-content/30">•</span>
+            <span class="text-sm text-base-content/50">{{ post.content | readingTime }}</span>
+          </div>
+          <h2 class="text-2xl font-bold mb-2 group-hover:text-secondary transition-colors">{{ post.data.title }}</h2>
+          <p class="text-base-content/70">{{ post.data.description | excerpt(200) }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

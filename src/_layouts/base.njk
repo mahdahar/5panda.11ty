@@ -69,15 +69,11 @@
                 Project
               </summary>
               <ul class="p-2 bg-base-100 rounded-t-none bg-base-100/95 backdrop-blur-xl border border-white/5 shadow-xl w-60 z-[100]">
-                {% for post in collections.posts %}
-                  {% if post.data.tags and 'clqms' not in post.data.tags %}
-                    <li>
-                      <a href="{{ post.url }}" class="{% if page.url == post.url %}text-primary bg-primary/10{% endif %} hover:text-primary hover:bg-primary/10">
-                        {{ post.data.title }}
-                      </a>
-                    </li>
-                  {% endif %}
-                {% endfor %}
+                <li>
+                  <a href="/clqms/" class="{% if page.url == '/clqms/' %}text-primary bg-primary/10{% endif %} hover:text-primary hover:bg-primary/10">
+                    CLQMS
+                  </a>
+                </li>
               </ul>
             </details>
           </li>

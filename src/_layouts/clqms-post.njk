@@ -24,13 +24,6 @@ layout: base.njk
           Updates
         </h3>
         <nav class="space-y-1">
-          <a
-            href="/blog/clqms01/"
-            class="block px-3 py-2 rounded-lg text-sm transition-colors {% if '/blog/clqms01/' == page.url %}bg-primary/10
-              text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300
-              hover:text-base-content{% endif %}">
-            Overview
-          </a>
           {% for post in collections.clqms %}
             <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-primary/10 text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
               {{ post.data.title }}
