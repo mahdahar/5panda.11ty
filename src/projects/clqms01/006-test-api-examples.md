@@ -2,6 +2,7 @@
 layout: clqms-post.njk
 tags: clqms
 title: "CLQMS: Test Definition API Examples"
+description: "Reference documentation for test maintenance API endpoints and data structures."
 date: 2025-12-10
 order: 10
 ---

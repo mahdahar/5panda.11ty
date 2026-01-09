@@ -2,6 +2,7 @@
 layout: clqms-post.njk
 tags: clqms
 title: "CLQMS: v1.0 Architecture Finalized"
+description: "Overview of the finalized v1.0 architecture and core design decisions."
 date: 2025-12-01
 order: 1
 ---

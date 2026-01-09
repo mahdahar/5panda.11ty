@@ -1,0 +1,30 @@
+---
+layout: base.njk
+title: Debug CLQMS Collection
+---
+
+<div class="p-10">
+  <h1>Debug Collection</h1>
+  <table class="table w-full">
+    <thead>
+      <tr>
+        <th>Index</th>
+        <th>Title</th>
+        <th>URL</th>
+        <th>File Path</th>
+        <th>Tags</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in collections.clqms %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>'{{ post.data.title }}'</td>
+          <td>{{ post.url }}</td>
+          <td>{{ post.inputPath }}</td>
+          <td>{{ post.data.tags }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

@@ -2,6 +2,7 @@
 layout: clqms-post.njk
 tags: clqms
 title: "CLQMS: Frontend Stack Decision"
+description: "Choosing SvelteKit 5 and DaisyUI for a performant, reactive dashboard."
 date: 2025-12-03
 order: 3
 ---

@@ -2,6 +2,7 @@
 layout: clqms-post.njk
 tags: clqms
 title: "Edge Workstation: SQLite Database Schema"
+description: "SQL Schema for local edge databases, supporting sync queues and offline reliability."
 date: 2025-12-07
 order: 7
 ---

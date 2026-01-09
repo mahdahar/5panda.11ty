@@ -25,9 +25,34 @@ layout: base.njk
         </h3>
         <nav class="space-y-1">
           {% for post in collections.clqms %}
-            <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-primary/10 text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
-              {{ post.data.title }}
-            </a>
+            {# Determine if we should show this post based on current section #}
+            {% set show_post = false %}
+            
+            {% if "/review/" in page.url %}
+              {# If in Review section, only show reviews #}
+              {% if "/review/" in post.url %}
+                {% set show_post = true %}
+              {% endif %}
+            {% elif "/suggestion/" in page.url %}
+              {# If in Suggestion section, only show suggestions #}
+              {% if "/suggestion/" in post.url %}
+                {% set show_post = true %}
+              {% endif %}
+            {% else %}
+              {# Main section (Architecture etc): Show everything EXCEPT reviews and suggestions #}
+              {% if not ("/review/" in post.url) and not ("/suggestion/" in post.url) %}
+                {% set show_post = true %}
+              {% endif %}
+            {% endif %}
+
+            {# Hide current page from list if it is an index page to avoid redundancy, or keep it? User said 'only reviews', usually implies lists of *other* reviews or all reviews. #}
+            {# Check if it's an index page by checking if the URL ends in a slash or index.html logic, but usually simple filter is enough. #}
+            
+            {% if show_post %}
+              <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-primary/10 text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+                {{ post.data.title }}
+              </a>
+            {% endif %}
           {% endfor %}
         </nav>
       </div>

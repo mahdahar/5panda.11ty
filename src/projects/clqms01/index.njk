@@ -1,0 +1,134 @@
+---
+layout: base.njk
+title: "CLQMS - Clinical Laboratory Quality Management System"
+description: "The core backend engine for modern clinical laboratory workflows"
+date: 2025-12-01
+order: 0
+---
+
+<!-- Hero Section -->
+<section class="pt-20 pb-12 bg-base-200/30 overflow-hidden relative">
+  <div class="section-container relative z-10">
+    <div class="text-center mb-12">
+      <span class="badge badge-secondary badge-outline mb-4">Project Workspace</span>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Clinical Laboratory Quality Management System</h1>
+      <p class="text-base-content/70 max-w-2xl mx-auto">
+        A robust, mission-critical API suite designed to streamline modern laboratory operations through precision, scalability,
+        and modular design.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- Module Navigation -->
+<section id="modules" class="py-12 bg-base-100">
+  <div class="section-container">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <a
+        href="/projects/clqms01/001-architecture/"
+        class="card bg-base-200 hover:bg-base-300 transition-all hover:-translate-y-1 border border-white/5">
+        <div class="card-body p-6">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="p-2 rounded bg-primary/10 text-primary text-xl">🏗️</span>
+            <h2 class="card-title text-base">Architecture</h2>
+          </div>
+          <p class="text-sm text-base-content/70">Core system design, authentication, and strategic pillars</p>
+        </div>
+      </a>
+      <!-- Authentication moved to Core Documentation list below -->
+      <a
+        href="/projects/clqms01/suggestion/"
+        class="card bg-base-200 border border-success/20 hover:bg-success/5 transition-all hover:-translate-y-1">
+        <div class="card-body p-6">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="p-2 rounded bg-success/10 text-success text-xl">💡</span>
+            <h2 class="card-title text-base">Suggestions</h2>
+          </div>
+          <p class="text-sm text-base-content/70">Future proposals and roadmap ideas</p>
+        </div>
+      </a>
+      <a
+        href="/projects/clqms01/review/"
+        class="card bg-base-200 border border-accent/20 hover:bg-accent/5 transition-all hover:-translate-y-1">
+        <div class="card-body p-6">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="p-2 rounded bg-accent/10 text-accent text-xl">🔍</span>
+            <h2 class="card-title text-base">Reviews</h2>
+          </div>
+          <p class="text-sm text-base-content/70">Expert code reviews and technical audits</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- Core Documentation -->
+<section id="docs" class="py-12">
+  <div class="section-container">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold flex items-center gap-2">
+        <span class="text-secondary opacity-50">#</span>
+        Core Documentation
+      </h2>
+    </div>
+    <div class="max-w-4xl mx-auto space-y-2">
+      {% for post in collections.clqms %}
+        {# Filter to show only root-level docs, excluding index and sub-directories #}
+        {% set is_suggestion = "/suggestion/" in post.url %}
+        {% set is_review = "/review/" in post.url %}
+        {% if post.url != page.url and not is_suggestion and not is_review and post.data.title %}
+          <a href="{{ post.url }}" title="{{ post.inputPath }}" class="group block p-5 rounded-xl bg-base-200/50 hover:bg-base-200 border border-base-content/10 transition-all">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+              <div>
+                <h3 class="text-lg font-bold group-hover:text-secondary transition-colors mb-1">{{ post.data.title }}</h3>
+                <p class="text-base-content/60 text-sm max-w-2xl leading-relaxed">
+                  {{ post.data.description | default('Technical reference for CLQMS implementation.') }}
+                </p>
+              </div>
+              <div class="flex items-center gap-4 text-xs font-mono text-base-content/40 whitespace-nowrap">
+                <span class="hidden md:inline">{{ post.content | readingTime }}</span>
+              </div>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- Strategy Section -->
+<section class="py-12 bg-base-200/30">
+  <div class="section-container">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold mb-8 text-center md:text-left">Strategic Pillars</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card p-6 border border-white/5 rounded-2xl">
+          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+            <span class="text-primary">🎯</span>
+            Precision & Accuracy
+          </h3>
+          <p class="text-base-content/70 text-sm">Strict validation for all laboratory parameters and multi-variant reference
+            ranges.</p>
+        </div>
+        <div class="glass-card p-6 border border-white/5 rounded-2xl">
+          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+            <span class="text-secondary">⚡</span>
+            Scalability
+          </h3>
+          <p class="text-base-content/70 text-sm">Optimized database and API architecture for high-volume diagnostic environments.</p>
+        </div>
+        <div class="glass-card p-6 border border-white/5 rounded-2xl">
+          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+            <span class="text-success">📜</span>
+            Compliance
+          </h3>
+          <p class="text-base-content/70 text-sm">Built-in audit trails and granular status history for full medical traceability.</p>
+        </div>
+        <div class="glass-card p-6 border border-white/5 rounded-2xl">
+          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+            <span class="text-accent">🔗</span>
+            Interoperability
+          </h3>
+          <p class="text-base-content/70 text-sm">Modular drivers designed for seamless LIS, HIS, and analyzer integration.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

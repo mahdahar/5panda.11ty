@@ -2,6 +2,7 @@
 layout: clqms-post.njk
 tags: clqms
 title: "CLQMS: JWT Authentication Module"
+description: "Stateless security implementation using JWT tokens and RBAC."
 date: 2025-12-02
 order: 2
 ---

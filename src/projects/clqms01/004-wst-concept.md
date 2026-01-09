@@ -2,6 +2,7 @@
 layout: clqms-post.njk
 tags: clqms
 title: "Project Pandaria: Next-Gen LIS Architecture"
+description: "Offline-first, event-driven WST architecture for maximum laboratory reliability."
 date: 2025-12-06
 order: 6
 ---
