@@ -2,64 +2,77 @@
 layout: base.njk
 ---
 
-<div class="w-full px-4 sm:px-6 lg:px-8 py-12 animate-slide-up">
-  <div class="flex flex-col lg:flex-row gap-12">
-    <!-- Sidebar Navigation -->
+<div class="w-full px-4 sm:px-6 lg:px-8 py-6 animate-slide-up">
+  <div class="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+    <!-- Sidebar Navigation - Sticky on scroll -->
     <aside class="lg:w-64 flex-shrink-0">
-      <div class="sticky top-24 bg-base-200/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
-        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 text-primary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2
-                2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+      <div class="lg:sticky lg:top-24 bg-base-200/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+        <!-- Back to CLQMS Home -->
+        <a href="/projects/clqms01/" class="flex items-center gap-2 text-sm text-base-content/70 hover:text-primary mb-6 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
-          Updates
-        </h3>
-        <nav class="space-y-1">
-          {% for post in collections.clqms %}
-            {# Determine if we should show this post based on current section #}
-            {% set show_post = false %}
-            
-            {% if "/review/" in page.url %}
-              {# If in Review section, only show reviews #}
-              {% if "/review/" in post.url %}
-                {% set show_post = true %}
-              {% endif %}
-            {% elif "/suggestion/" in page.url %}
-              {# If in Suggestion section, only show suggestions #}
-              {% if "/suggestion/" in post.url %}
-                {% set show_post = true %}
-              {% endif %}
-            {% else %}
-              {# Main section (Architecture etc): Show everything EXCEPT reviews and suggestions #}
-              {% if not ("/review/" in post.url) and not ("/suggestion/" in post.url) %}
-                {% set show_post = true %}
-              {% endif %}
-            {% endif %}
+          CLQMS Home
+        </a>
 
-            {# Hide current page from list if it is an index page to avoid redundancy, or keep it? User said 'only reviews', usually implies lists of *other* reviews or all reviews. #}
-            {# Check if it's an index page by checking if the URL ends in a slash or index.html logic, but usually simple filter is enough. #}
-            
-            {% if show_post %}
-              <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-primary/10 text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
-                {{ post.data.title }}
-              </a>
-            {% endif %}
-          {% endfor %}
-        </nav>
+        <!-- Core Documentation -->
+        <div class="mb-6">
+          <h3 class="font-bold text-sm text-base-content/50 uppercase tracking-wider mb-3">Core Documentation</h3>
+          <nav class="space-y-1">
+            {% for post in collections.clqms %}
+              {% set is_main = not ("/review/" in post.url or "/suggestion/" in post.url) %}
+              {% if is_main and post.data.title %}
+                <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-primary/10 text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+                  {{ post.data.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </nav>
+        </div>
+
+        <!-- Suggestions Section -->
+        <div class="mb-6">
+          <a href="/projects/clqms01/suggestion/" class="flex items-center gap-2 font-bold text-sm text-base-content/50 uppercase tracking-wider mb-3 hover:text-success transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            Suggestions
+          </a>
+          <nav class="space-y-1">
+            {% for post in collections.clqms %}
+              {% if "/suggestion/" in post.url and post.data.title and post.url != "/projects/clqms01/suggestion/" %}
+                <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-success/10 text-success font-medium border-l-2 border-success{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+                  {{ post.data.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </nav>
+        </div>
+
+        <!-- Reviews Section -->
+        <div>
+          <a href="/projects/clqms01/review/" class="flex items-center gap-2 font-bold text-sm text-base-content/50 uppercase tracking-wider mb-3 hover:text-accent transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            Reviews
+          </a>
+          <nav class="space-y-1">
+            {% for post in collections.clqms %}
+              {% if "/review/" in post.url and post.data.title and post.url != "/projects/clqms01/review/" %}
+                <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-accent/10 text-accent font-medium border-l-2 border-accent{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+                  {{ post.data.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </nav>
+        </div>
       </div>
     </aside>
+
     <!-- Main Content -->
-    <main class="flex-1 min-w-0">
-      <article>
+    <main class="flex-1 min-w-0 max-w-3xl">
+      <article class="pb-12">
         <!-- Post header -->
         <header class="mb-10">
           <div class="flex flex-wrap gap-2 mb-4">
@@ -69,15 +82,11 @@ layout: base.njk
               {% endif %}
             {% endfor %}
           </div>
-          <h1 class="text-4xl md:text-5xl font-bold mb-4">{{ title }}</h1>
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">{{ title }}</h1>
           <div class="flex flex-wrap items-center gap-4 text-base-content/60">
             <time datetime="{{ date | dateFormat('iso') }}" class="flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
               </svg>
               {{ date | dateFormat('full') }}
             </time>
@@ -90,7 +99,7 @@ layout: base.njk
           </div>
         </header>
         <!-- Post content -->
-        <div class="prose-custom max-w-none">
+        <div class="prose-custom">
           {{ content | safe }}
         </div>
       </article>

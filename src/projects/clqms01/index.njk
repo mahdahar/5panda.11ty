@@ -6,129 +6,179 @@ date: 2025-12-01
 order: 0
 ---
 
-<!-- Hero Section -->
-<section class="pt-20 pb-12 bg-base-200/30 overflow-hidden relative">
-  <div class="section-container relative z-10">
-    <div class="text-center mb-12">
-      <span class="badge badge-secondary badge-outline mb-4">Project Workspace</span>
-      <h1 class="text-4xl md:text-5xl font-bold mb-4">Clinical Laboratory Quality Management System</h1>
-      <p class="text-base-content/70 max-w-2xl mx-auto">
-        A robust, mission-critical API suite designed to streamline modern laboratory operations through precision, scalability,
-        and modular design.
-      </p>
-    </div>
-  </div>
-</section>
-<!-- Module Navigation -->
-<section id="modules" class="py-12 bg-base-100">
-  <div class="section-container">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <a
-        href="/projects/clqms01/001-architecture/"
-        class="card bg-base-200 hover:bg-base-300 transition-all hover:-translate-y-1 border border-white/5">
-        <div class="card-body p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="p-2 rounded bg-primary/10 text-primary text-xl">🏗️</span>
-            <h2 class="card-title text-base">Architecture</h2>
-          </div>
-          <p class="text-sm text-base-content/70">Core system design, authentication, and strategic pillars</p>
+<div class="w-full px-4 sm:px-6 lg:px-8 py-6 animate-slide-up">
+  <div class="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+    <!-- Sidebar Navigation - Sticky on scroll -->
+    <aside class="lg:w-64 flex-shrink-0 order-2 lg:order-1">
+      <div class="lg:sticky lg:top-24 bg-base-200/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+        <!-- Core Documentation -->
+        <div class="mb-6">
+          <h3 class="font-bold text-sm text-base-content/50 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            Core Docs
+          </h3>
+          <nav class="space-y-1">
+            {% for post in collections.clqms %}
+              {% set is_main = not ("/review/" in post.url or "/suggestion/" in post.url) %}
+              {% if is_main and post.data.title %}
+                <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-primary/10 text-primary font-medium border-l-2 border-primary{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+                  {{ post.data.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </nav>
         </div>
-      </a>
-      <!-- Authentication moved to Core Documentation list below -->
-      <a
-        href="/projects/clqms01/suggestion/"
-        class="card bg-base-200 border border-success/20 hover:bg-success/5 transition-all hover:-translate-y-1">
-        <div class="card-body p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="p-2 rounded bg-success/10 text-success text-xl">💡</span>
-            <h2 class="card-title text-base">Suggestions</h2>
-          </div>
-          <p class="text-sm text-base-content/70">Future proposals and roadmap ideas</p>
-        </div>
-      </a>
-      <a
-        href="/projects/clqms01/review/"
-        class="card bg-base-200 border border-accent/20 hover:bg-accent/5 transition-all hover:-translate-y-1">
-        <div class="card-body p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="p-2 rounded bg-accent/10 text-accent text-xl">🔍</span>
-            <h2 class="card-title text-base">Reviews</h2>
-          </div>
-          <p class="text-sm text-base-content/70">Expert code reviews and technical audits</p>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
-<!-- Core Documentation -->
-<section id="docs" class="py-12">
-  <div class="section-container">
-    <div class="flex items-center justify-between mb-8">
-      <h2 class="text-2xl font-bold flex items-center gap-2">
-        <span class="text-secondary opacity-50">#</span>
-        Core Documentation
-      </h2>
-    </div>
-    <div class="max-w-4xl mx-auto space-y-2">
-      {% for post in collections.clqms %}
-        {# Filter to show only root-level docs, excluding index and sub-directories #}
-        {% set is_suggestion = "/suggestion/" in post.url %}
-        {% set is_review = "/review/" in post.url %}
-        {% if post.url != page.url and not is_suggestion and not is_review and post.data.title %}
-          <a href="{{ post.url }}" title="{{ post.inputPath }}" class="group block p-5 rounded-xl bg-base-200/50 hover:bg-base-200 border border-base-content/10 transition-all">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
-              <div>
-                <h3 class="text-lg font-bold group-hover:text-secondary transition-colors mb-1">{{ post.data.title }}</h3>
-                <p class="text-base-content/60 text-sm max-w-2xl leading-relaxed">
-                  {{ post.data.description | default('Technical reference for CLQMS implementation.') }}
-                </p>
-              </div>
-              <div class="flex items-center gap-4 text-xs font-mono text-base-content/40 whitespace-nowrap">
-                <span class="hidden md:inline">{{ post.content | readingTime }}</span>
-              </div>
-            </div>
+
+        <!-- Suggestions Section -->
+        <div class="mb-6">
+          <a href="/projects/clqms01/suggestion/" class="flex items-center gap-2 font-bold text-sm text-base-content/50 uppercase tracking-wider mb-3 hover:text-success transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+            Suggestions
           </a>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-</section>
-<!-- Strategy Section -->
-<section class="py-12 bg-base-200/30">
-  <div class="section-container">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-8 text-center md:text-left">Strategic Pillars</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-card p-6 border border-white/5 rounded-2xl">
-          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
-            <span class="text-primary">🎯</span>
-            Precision & Accuracy
-          </h3>
-          <p class="text-base-content/70 text-sm">Strict validation for all laboratory parameters and multi-variant reference
-            ranges.</p>
+          <nav class="space-y-1">
+            {% for post in collections.clqms %}
+              {% if "/suggestion/" in post.url and post.data.title and post.url != "/projects/clqms01/suggestion/" %}
+                <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-success/10 text-success font-medium border-l-2 border-success{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+                  {{ post.data.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </nav>
         </div>
-        <div class="glass-card p-6 border border-white/5 rounded-2xl">
-          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
-            <span class="text-secondary">⚡</span>
-            Scalability
-          </h3>
-          <p class="text-base-content/70 text-sm">Optimized database and API architecture for high-volume diagnostic environments.</p>
-        </div>
-        <div class="glass-card p-6 border border-white/5 rounded-2xl">
-          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
-            <span class="text-success">📜</span>
-            Compliance
-          </h3>
-          <p class="text-base-content/70 text-sm">Built-in audit trails and granular status history for full medical traceability.</p>
-        </div>
-        <div class="glass-card p-6 border border-white/5 rounded-2xl">
-          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
-            <span class="text-accent">🔗</span>
-            Interoperability
-          </h3>
-          <p class="text-base-content/70 text-sm">Modular drivers designed for seamless LIS, HIS, and analyzer integration.</p>
+
+        <!-- Reviews Section -->
+        <div>
+          <a href="/projects/clqms01/review/" class="flex items-center gap-2 font-bold text-sm text-base-content/50 uppercase tracking-wider mb-3 hover:text-accent transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            Reviews
+          </a>
+          <nav class="space-y-1">
+            {% for post in collections.clqms %}
+              {% if "/review/" in post.url and post.data.title and post.url != "/projects/clqms01/review/" %}
+                <a href="{{ post.url }}" class="block px-3 py-2 rounded-lg text-sm transition-colors {% if page.url == post.url %}bg-accent/10 text-accent font-medium border-l-2 border-accent{% else %}text-base-content/70 hover:bg-base-300 hover:text-base-content{% endif %}">
+                  {{ post.data.title }}
+                </a>
+              {% endif %}
+            {% endfor %}
+          </nav>
         </div>
       </div>
-    </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 max-w-3xl order-1 lg:order-2">
+      <div class="pb-12">
+        <!-- Hero Section -->
+        <section class="mb-12">
+          <div class="text-center lg:text-left">
+            <span class="badge badge-secondary badge-outline mb-4">Project Workspace</span>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Clinical Laboratory Quality Management System</h1>
+            <p class="text-base-content/70 max-w-2xl">
+              A robust, mission-critical API suite designed to streamline modern laboratory operations through precision, scalability,
+              and modular design.
+            </p>
+          </div>
+        </section>
+
+        <!-- Module Navigation -->
+        <section id="modules" class="mb-12">
+          <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+            <span class="text-primary opacity-50">#</span>
+            Quick Access
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <a href="#docs" class="card bg-base-200 hover:bg-base-300 transition-all hover:-translate-y-1 border border-white/5 p-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="p-2 rounded bg-primary/10 text-primary text-xl">🏗️</span>
+                <h3 class="font-bold text-base">Core Docs</h3>
+              </div>
+              <p class="text-sm text-base-content/70">Architecture, auth, and technical docs</p>
+            </a>
+            <a href="/projects/clqms01/suggestion/" class="card bg-base-200 border border-success/20 hover:bg-success/5 transition-all hover:-translate-y-1 p-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="p-2 rounded bg-success/10 text-success text-xl">💡</span>
+                <h3 class="font-bold text-base">Suggestions</h3>
+              </div>
+              <p class="text-sm text-base-content/70">Future proposals and roadmap ideas</p>
+            </a>
+            <a href="/projects/clqms01/review/" class="card bg-base-200 border border-accent/20 hover:bg-accent/5 transition-all hover:-translate-y-1 p-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="p-2 rounded bg-accent/10 text-accent text-xl">🔍</span>
+                <h3 class="font-bold text-base">Reviews</h3>
+              </div>
+              <p class="text-sm text-base-content/70">Expert code reviews and audits</p>
+            </a>
+          </div>
+        </section>
+
+        <!-- Core Documentation -->
+        <section id="docs" class="mb-12">
+          <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+            <span class="text-secondary opacity-50">#</span>
+            Core Documentation
+          </h2>
+          <div class="space-y-2">
+            {% for post in collections.clqms %}
+              {% set is_suggestion = "/suggestion/" in post.url %}
+              {% set is_review = "/review/" in post.url %}
+              {% if post.url != page.url and not is_suggestion and not is_review and post.data.title %}
+                <a href="{{ post.url }}" title="{{ post.inputPath }}" class="group block p-4 rounded-xl bg-base-200/50 hover:bg-base-200 border border-base-content/10 transition-all">
+                  <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div>
+                      <h3 class="text-lg font-bold group-hover:text-secondary transition-colors mb-1">{{ post.data.title }}</h3>
+                      <p class="text-base-content/60 text-sm max-w-2xl leading-relaxed">
+                        {{ post.data.description | default('Technical reference for CLQMS implementation.') }}
+                      </p>
+                    </div>
+                    <span class="hidden md:inline text-xs font-mono text-base-content/40 whitespace-nowrap">{{ post.content | readingTime }}</span>
+                  </div>
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </section>
+
+        <!-- Strategy Section -->
+        <section class="bg-base-200/30 rounded-2xl p-6 border border-white/5">
+          <h2 class="text-xl font-bold mb-6">Strategic Pillars</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="glass-card p-5 border border-white/5 rounded-xl">
+              <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+                <span class="text-primary">🎯</span>
+                Precision & Accuracy
+              </h3>
+              <p class="text-base-content/70 text-sm">Strict validation for all laboratory parameters and multi-variant reference ranges.</p>
+            </div>
+            <div class="glass-card p-5 border border-white/5 rounded-xl">
+              <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+                <span class="text-secondary">⚡</span>
+                Scalability
+              </h3>
+              <p class="text-base-content/70 text-sm">Optimized database and API architecture for high-volume diagnostic environments.</p>
+            </div>
+            <div class="glass-card p-5 border border-white/5 rounded-xl">
+              <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+                <span class="text-success">📜</span>
+                Compliance
+              </h3>
+              <p class="text-base-content/70 text-sm">Built-in audit trails and granular status history for full medical traceability.</p>
+            </div>
+            <div class="glass-card p-5 border border-white/5 rounded-xl">
+              <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+                <span class="text-accent">🔗</span>
+                Interoperability
+              </h3>
+              <p class="text-base-content/70 text-sm">Modular drivers designed for seamless LIS, HIS, and analyzer integration.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   </div>
-</section>
+</div>

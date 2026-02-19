@@ -6,6 +6,11 @@ module.exports = function (eleventyConfig) {
   // Watch targets
   eleventyConfig.addWatchTarget("src/css");
 
+  // Global Permalink: Use .html extension instead of nested index.html files
+  eleventyConfig.addGlobalData("permalink", () => {
+    return "{{ page.filePathStem }}.html";
+  });
+
   // Add year shortcode
   eleventyConfig.addShortcode("year", () => `${new Date().getFullYear()}`);
 

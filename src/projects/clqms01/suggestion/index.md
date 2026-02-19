@@ -35,6 +35,14 @@ When documenting suggestions, please include:
 
 ## Suggestion List
 
+### [High] Backend Dev: Implementation Plan
+**Description:** Consolidated developer review for proposals 001 and 002.
+[View Plan](./003-decision-001-002.md)
+
+### [High] Audit Logging Architecture Plan
+**Description:** Comprehensive audit trail strategy for tracking changes across master data, patient records, and laboratory operations.
+[View Plan](./audit-logging-plan.md)
+
 ### [TBD] Add new suggestions here
 
 <!-- Use the format below for each suggestion:
