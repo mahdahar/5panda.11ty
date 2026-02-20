@@ -41,7 +41,7 @@ When documenting suggestions, please include:
 
 ### [High] Audit Logging Architecture Plan
 **Description:** Comprehensive audit trail strategy for tracking changes across master data, patient records, and laboratory operations.
-[View Plan](./audit-logging-plan.md)
+[View Plan](./004-audit-logging-plan.md)
 
 ### [TBD] Add new suggestions here
 
@@ -59,4 +59,4 @@ When documenting suggestions, please include:
 -->
 
 ---
-_Last updated: 2026-01-09 08:40:21_
+_Last updated: 2026-02-20 00:00:00_
