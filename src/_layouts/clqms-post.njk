@@ -6,7 +6,7 @@ layout: base.njk
   <div class="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
     <!-- Sidebar Navigation - Sticky on scroll -->
     <aside class="lg:w-64 flex-shrink-0">
-      <div class="lg:sticky lg:top-24 bg-base-200/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+      <div class="lg:sticky lg:top-24 bg-base-200/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 overflow-y-auto max-h-[calc(100vh-8rem)]">
         <!-- Back to CLQMS Home -->
         <a href="/projects/clqms01/" class="flex items-center gap-2 text-sm text-base-content/70 hover:text-primary mb-6 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,7 +71,7 @@ layout: base.njk
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 min-w-0 max-w-3xl">
+    <main class="flex-1 min-w-0 max-w-4xl">
       <article class="pb-12">
         <!-- Post header -->
         <header class="mb-10">
