@@ -92,13 +92,20 @@ order: 0
             <span class="text-primary opacity-50">#</span>
             Quick Access
           </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <a href="#docs" class="card bg-base-200 hover:bg-base-300 transition-all hover:-translate-y-1 border border-white/5 p-6">
               <div class="flex items-center gap-3 mb-2">
                 <span class="p-2 rounded bg-primary/10 text-primary text-xl">🏗️</span>
                 <h3 class="font-bold text-base">Core Docs</h3>
               </div>
               <p class="text-sm text-base-content/70">Architecture, auth, and technical docs</p>
+            </a>
+            <a href="/projects/clqms01/009-audit-logging/" class="card bg-base-200 border border-secondary/20 hover:bg-secondary/5 transition-all hover:-translate-y-1 p-6">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="p-2 rounded bg-secondary/10 text-secondary text-xl">🧾</span>
+                <h3 class="font-bold text-base">Audit Logging</h3>
+              </div>
+              <p class="text-sm text-base-content/70">Event catalog, schema, and capture rules</p>
             </a>
             <a href="/projects/clqms01/suggestion/" class="card bg-base-200 border border-success/20 hover:bg-success/5 transition-all hover:-translate-y-1 p-6">
               <div class="flex items-center gap-3 mb-2">
@@ -124,6 +131,17 @@ order: 0
             Core Documentation
           </h2>
           <div class="space-y-2">
+            <a href="/projects/clqms01/007-test-calc-engine/" title="src/projects/clqms01/007-test-calc-engine.md" class="group block p-4 rounded-xl bg-base-200/50 hover:bg-base-200 border border-base-content/10 transition-all">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <div>
+                  <h3 class="text-lg font-bold group-hover:text-secondary transition-colors mb-1">Calculator Service Operators Reference</h3>
+                  <p class="text-base-content/60 text-sm max-w-2xl leading-relaxed">
+                    Operators, functions, constants, and API usage for the calc engine.
+                  </p>
+                </div>
+                <span class="hidden md:inline text-xs font-mono text-base-content/40 whitespace-nowrap">Reference</span>
+              </div>
+            </a>
             {% for post in collections.clqms %}
               {% set is_suggestion = "/suggestion/" in post.url %}
               {% set is_review = "/review/" in post.url %}
