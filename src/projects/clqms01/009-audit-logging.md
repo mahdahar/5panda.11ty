@@ -2,201 +2,148 @@
 layout: clqms-post.njk
 tags: clqms
 title: "Audit Logging"
-description: "Unified audit logging model, event catalog, and capture rules for CLQMS."
+description: "Audit logging concept and example API contracts for CLQMS"
 date: 2026-03-17
 order: 9
 ---
-# Audit Logging Strategy
 
-## Overview
+# Audit Logging: Concept and Example API Contract
 
-This document defines how CLQMS should capture audit and operational logs across four tables:
+## Concept
 
-- `logpatient` — patient, visit, and ADT activity
-- `logorder` — orders, tests, specimens, results, and QC
-- `logmaster` — master data and configuration changes
-- `logsystem` — sessions, security, import/export, and system operations
+CLQMS uses four audit tables so domain activity is separated but consistent:
 
-The intent is to audit all domains, including master data changes, and to standardize event capture so reporting and compliance are consistent.
+- `logpatient` - patient, identity, consent, insurance, and visit/ADT activity
+- `logorder` - orders, specimens, results, and QC activity
+- `logmaster` - configuration and master data changes
+- `logsystem` - sessions, security, integration jobs, and system operations
 
-## Table Ownership
+The goal is traceability: who did what, when, where, and why.
 
-| Event | Table |
-| --- | --- |
-| Patient registered/updated/merged | `logpatient` |
-| Insurance/consent changed | `logpatient` |
-| Patient visit (admit/transfer/discharge) | `logpatient` |
-| Order created/cancelled | `logorder` |
-| Sample received/rejected | `logorder` |
-| Result entered/verified/amended | `logorder` |
-| Result released/retracted/corrected | `logorder` |
-| QC result recorded | `logorder` |
-| Test panel added/removed | `logmaster` |
-| Reference range changed | `logmaster` |
-| Analyzer config updated | `logmaster` |
-| User role changed | `logmaster` |
-| User login/logout | `logsystem` |
-| Import/export job start/end | `logsystem` |
+### Shared Audit Fields
 
-## Standard Log Schema (Shared Columns)
+All log records should carry the same core metadata:
 
-Use a shared schema for all four tables to keep instrumentation and reporting consistent. The legacy names below match existing patterns and can be reused.
+- identity: `UserID`, `SessionID`, `SiteID`
+- event classification: `EventID`, `ActivityID`
+- change details: `TblName`, `RecID`, `FldName`, `FldValuePrev`, `FldValueNew`
+- time/context: `LogDate`, optional `Context` JSON, optional `IpAddress`
 
-| Column | Description |
-| --- | --- |
-| `LogID` (PK) | Auto increment primary key per table (e.g., `LogPatientID`) |
-| `TblName` | Source table name |
-| `RecID` | Record ID of the entity |
-| `FldName` | Field name that changed (nullable for bulk events) |
-| `FldValuePrev` | Previous value (string or JSON) |
-| `FldValueNew` | New value (string or JSON) |
-| `UserID` | Acting user ID (nullable for system actions) |
-| `SiteID` | Site context |
-| `DIDType` | Device identifier type |
-| `DID` | Device identifier |
-| `MachineID` | Workstation or host identifier |
-| `SessionID` | Session identifier |
-| `AppID` | Client application ID |
-| `ProcessID` | Process/workflow identifier |
-| `WebPageID` | UI page/context (nullable) |
-| `EventID` | Event code (see catalog) |
-| `ActivityID` | Action code (create/update/delete/read/etc.) |
-| `Reason` | User/system reason |
-| `LogDate` | Timestamp of event |
-| `Context` | JSON metadata (optional but recommended) |
-| `IpAddress` | Remote IP (optional but recommended) |
+### Category Reference (Simplified)
 
-Recommended: keep a JSON string in `Context` for extra details (e.g., route, request id, batch id, error message). Use size limits to avoid oversized rows.
+- **Patient (`logpatient`)**: register/update/merge, consent/insurance changes, ADT events
+- **Order (`logorder`)**: create/cancel/reopen, specimen lifecycle, result verify/amend/release,
+  QC record/override
+- **Master (`logmaster`)**: test definitions, reference ranges, analyzer/integration config,
+  user/role/permission changes
+- **System (`logsystem`)**: login/logout/failures, token lifecycle, import/export jobs,
+  background process events
 
-## Event Catalog
+Recommended `ActivityID` values:
+`CREATE`, `UPDATE`, `DELETE`, `READ`, `MERGE`, `SPLIT`, `CANCEL`, `REOPEN`, `VERIFY`,
+`AMEND`, `RETRACT`, `RELEASE`, `IMPORT`, `EXPORT`, `LOGIN`, `LOGOUT`.
 
-### logpatient
+---
 
-**Patient core**
+## Example API Contract (Reference Pattern)
 
-- Register patient
-- Update demographics
-- Merge/unmerge/split
-- Identity changes (MRN, external identifiers)
-- Consent grant/revoke/update
-- Insurance add/update/remove
-- Patient record view (if required by compliance)
+These contracts are a reference pattern for standardizing audit capture and reporting.
 
-**Visit/ADT**
+### 1) Write Audit Event
 
-- Admit, transfer, discharge
-- Bed/ward/unit changes
-- Visit status updates
+```http
+POST /api/audit/log
+Content-Type: application/json
+```
 
-**Other**
+Purpose: write one normalized audit event, then route it to the correct log table.
 
-- Patient notes/attachments added/removed
-- Patient alerts/flags changes
+Request example:
 
-### logorder
+```json
+{
+  "domain": "order",
+  "TblName": "patres",
+  "RecID": "12345",
+  "FldName": "Result",
+  "FldValuePrev": "1.0",
+  "FldValueNew": "1.2",
+  "EventID": "RESULT_VERIFIED",
+  "ActivityID": "VERIFY",
+  "Reason": "Auto verification rule passed",
+  "UserID": "u001",
+  "SiteID": "s01",
+  "SessionID": "sess-8f31",
+  "LogDate": "2026-03-17T10:21:33Z",
+  "Context": {
+    "order_id": "OID-7788",
+    "test_code": "GLU",
+    "request_id": "req-2a9"
+  },
+  "IpAddress": "10.2.4.8"
+}
+```
 
-**Orders/tests**
+Success response example:
 
-- Create/cancel/reopen order
-- Add/remove tests
-- Priority changes
-- Order comments added/removed
+```json
+{
+  "status": "success",
+  "message": "Audit event stored",
+  "data": {
+    "table": "logorder",
+    "logId": 556901
+  }
+}
+```
 
-**Specimen lifecycle**
+Error response example:
 
-- Collected, labeled, received, rejected
-- Centrifuged, aliquoted, stored
-- Disposed/expired
+```json
+{
+  "status": "error",
+  "message": "Missing required field: EventID",
+  "data": null
+}
+```
 
-**Results**
+### 2) Query Audit Logs
 
-- Result entered/updated
-- Verified/amended
-- Released/retracted/corrected
-- Result comments/interpretation changes
-- Auto-verification override
+```http
+GET /api/audit/logs?domain=order&recId=12345&eventId=RESULT_VERIFIED&from=2026-03-01&to=2026-03-31
+```
 
-**QC**
+Purpose: retrieve normalized audit history with filters for investigation and compliance.
 
-- QC result recorded
-- QC failure/override
+Success response example:
 
-### logmaster
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "logId": 556901,
+      "table": "logorder",
+      "EventID": "RESULT_VERIFIED",
+      "ActivityID": "VERIFY",
+      "TblName": "patres",
+      "RecID": "12345",
+      "FldName": "Result",
+      "FldValuePrev": "1.0",
+      "FldValueNew": "1.2",
+      "UserID": "u001",
+      "SiteID": "s01",
+      "LogDate": "2026-03-17T10:21:33Z"
+    }
+  ]
+}
+```
 
-**Value sets**
+---
 
-- Create/update/retire value set items
+## Capture Rules (Short)
 
-**Test definitions**
-
-- Test definition updates (units, methods, ranges)
-- Reference range changes
-- Formula/delta check changes
-- Test panel membership add/remove
-
-**Infrastructure**
-
-- Analyzer/instrument config changes
-- Host app integration config
-- Coding system changes
-
-**Users/roles**
-
-- User create/disable/reset
-- Role changes
-- Permission changes
-
-**Sites/workstations**
-
-- Site/location/workstation CRUD
-
-### logsystem
-
-**Sessions & security**
-
-- Login/logout
-- Failed login attempts
-- Lockouts/password resets
-- Token issue/refresh/revoke
-- Authorization failures
-
-**Import/export**
-
-- Import/export job start/end
-- Batch ID, source, record counts, status
-
-**System operations**
-
-- Background jobs start/end
-- Integration sync runs
-- System config changes
-- Service errors that affect data integrity
-
-## Activity & Event Codes
-
-Use consistent `ActivityID` and `EventID` values. Recommended defaults:
-
-- `ActivityID`: `CREATE`, `UPDATE`, `DELETE`, `READ`, `MERGE`, `SPLIT`, `CANCEL`, `REOPEN`, `VERIFY`, `AMEND`, `RETRACT`, `RELEASE`, `IMPORT`, `EXPORT`, `LOGIN`, `LOGOUT`
-- `EventID`: domain-specific codes (e.g., `PATIENT_REGISTERED`, `ORDER_CREATED`, `RESULT_VERIFIED`, `QC_RECORDED`)
-
-## Capture Guidelines
-
-- Always capture `UserID`, `SessionID`, `SiteID`, and `LogDate` when available.
-- If the action is system-driven, set `UserID` to `SYSTEM` (or null) and add context in `Context`.
-- Store payload diffs in `FldValuePrev` and `FldValueNew` for single-field changes; for multi-field changes, put a JSON diff in `Context` and leave `FldName` null.
-- For bulk operations, store batch metadata in `Context` (`batch_id`, `record_count`, `source`).
-- Do not log secrets, tokens, or full PHI when not required. Mask or omit sensitive fields.
-
-## Retention & Governance
-
-- Define retention policy per table (e.g., 7 years for patient/order, 2 years for system).
-- Archive before purge; record purge activity in `logsystem`.
-- Restrict write/delete permissions to service accounts only.
-
-## Implementation Checklist
-
-1. Create the four tables with shared schema (or migrate existing log tables to match).
-2. Add a single audit service with helpers to build a normalized payload.
-3. Instrument controllers/services for each event category above.
-4. Add automated tests for representative audit writes.
-5. Document `EventID` codes used by each endpoint/service.
+- Always include `UserID`, `SessionID`, `SiteID`, `EventID`, `ActivityID`, and `LogDate`.
+- For multi-field updates, keep `FldName` null and store the diff in `Context`.
+- Do not log secrets/tokens; mask sensitive values in payloads.
+- For system-driven actions, use `UserID = SYSTEM` (or null) and explain in `Context`.

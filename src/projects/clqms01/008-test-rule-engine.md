@@ -2,180 +2,153 @@
 layout: clqms-post.njk
 tags: clqms
 title: "Test Rule Engine Documentation"
-description: "Comprehensive guide to the CLQMS Rule Engine DSL, syntax, and action definitions."
+description: "Concept, catalog, and API contracts for the CLQMS Rule Engine"
 date: 2026-03-16
 order: 8
 ---
 
-# Test Rule Engine Documentation
+# Test Rule Engine: Concept and API Contract
 
-## Overview
+## Concept
 
-The CLQMS Rule Engine evaluates business rules that inspect orders, patients, and tests, then executes actions when the compiled condition matches.
+The CLQMS Rule Engine executes business rules when specific events occur.
 
-Rules are authored using a domain specific language stored in `ruledef.ConditionExpr`. Before the platform executes any rule, the DSL must be compiled into JSON and stored in `ConditionExprCompiled`, and each rule must be linked to the tests it should influence via `testrule`.
+Each rule follows this lifecycle:
 
-### Execution Flow
+1. Author DSL in `ConditionExpr`.
+2. Compile DSL using `POST /api/rule/compile`.
+3. Save compiled JSON in `ConditionExprCompiled`.
+4. Link the rule to tests via `testrule.TestSiteID`.
+5. On trigger (`test_created`, `result_updated`), execute `then` or `else` actions.
 
-1. Write or edit the DSL in `ConditionExpr`.
-2. POST the expression to `POST /api/rule/compile` to validate syntax and produce compiled JSON.
-3. Save the compiled payload into `ConditionExprCompiled` and persist the rule in `ruledef`.
-4. Link the rule to one or more tests through `testrule.TestSiteID` (rules only run for linked tests).
-5. When the configured event fires (`test_created` or `result_updated`), the engine evaluates `ConditionExprCompiled` and runs the resulting `then` or `else` actions.
+Rules without compiled JSON or without test links are not executed.
 
-> **Note:** The rule engine currently fires only for `test_created` and `result_updated`. Other event codes can exist in the database but are not triggered by the application unless additional `RuleEngineService::run(...)` calls are added.
+---
 
 ## Event Triggers
 
 | Event Code | Status | Trigger Point |
 |------------|--------|----------------|
-| `test_created` | Active | Fired after a new test row is persisted; the handler calls `RuleEngineService::run('test_created', ...)` to evaluate test-scoped rules |
-| `result_updated` | Active | Fired whenever a test result is saved or updated so result-dependent rules run immediately |
+| `test_created` | Active | Runs after a new test row is saved |
+| `result_updated` | Active | Runs when a result is saved or edited |
 
-Other event codes remain in the database for future workflows, but only `test_created` and `result_updated` are executed by the current application flow.
+Other event codes may exist in data, but these are the active runtime triggers.
 
-## Rule Structure
+---
 
+## Rule Shape
+
+```txt
+Rule = Event + Condition + Actions
 ```
-Rule
-├── Event Trigger (when to run)
-├── Conditions (when to match)
-└── Actions (what to do)
-```
 
-The DSL expression lives in `ConditionExpr`. The compile endpoint (`/api/rule/compile`) renders the lifeblood of execution, producing `conditionExpr`, `valueExpr`, `then`, and `else` nodes that the engine consumes at runtime.
+DSL format:
 
-## Syntax Guide
-
-### Basic Format
-
-```
+```txt
 if(condition; then-action; else-action)
 ```
 
-### Logical Operators
+Multi-action branches use `:` and execute left to right:
 
-- Use `&&` for AND (all sub-conditions must match).
-- Use `||` for OR (any matching branch satisfies the rule).
-- Surround mixed logic with parentheses for clarity and precedence.
-
-### Multi-Action Syntax
-
-Actions within any branch are separated by `:` and evaluated in order. Every `then` and `else` branch must end with an action; use `nothing` when no further work is required.
-
-```
+```txt
 if(sex('M'); result_set(0.5):test_insert('HBA1C'); nothing)
 ```
 
-### Multiple Rules
+---
 
-Create each rule as its own `ruledef` row; do not chain expressions with commas. The `testrule` table manages rule-to-test mappings, so multiple rules can attach to the same test. Example:
-
-1. Insert `RULE_MALE_RESULT` and `RULE_SENIOR_COMMENT` in `ruledef`.
-2. Add two `testrule` rows linking each rule to the appropriate `TestSiteID`.
-
-Each rule compiles and runs independently when its trigger fires and the test is linked.
-
-## Available Functions
+## Catalog (Simplified)
 
 ### Conditions
 
-| Function | Description | Example |
-|----------|-------------|---------|
+| Function / Pattern | Meaning | Example |
+|--------------------|---------|---------|
 | `sex('M'|'F')` | Match patient sex | `sex('M')` |
 | `priority('R'|'S'|'U')` | Match order priority | `priority('S')` |
-| `age > 18` | Numeric age comparisons (`>`, `<`, `>=`, `<=`) | `age >= 18 && age <= 65` |
-| `requested('CODE')` | Check whether the order already requested a test (queries `patres`) | `requested('GLU')` |
+| `age` comparisons | Numeric age checks | `age >= 18 && age <= 65` |
+| `requested('CODE')` | Checks if test code exists in order | `requested('GLU')` |
 
 ### Logical Operators
 
 | Operator | Meaning | Example |
 |----------|---------|---------|
-| `&&` | AND (all truthy) | `sex('M') && age > 40` |
-| `||` | OR (any truthy) | `sex('M') || age > 65` |
-| `()` | Group expressions | `(sex('M') && age > 40) || priority('S')` |
+| `&&` | AND | `sex('M') && age > 40` |
+| `\|\|` | OR | `sex('M') \|\| age > 65` |
+| `!` | NOT | `!(sex('M'))` |
+| `()` | Grouping | `(sex('M') && age > 40) \|\| priority('S')` |
 
-## Actions
+### Actions
 
-| Action | Description | Example |
-|--------|-------------|---------|
-| `result_set(value)` | (deprecated) Write to `patres.Result` for the current context test | `result_set(0.5)` |
-| `result_set('CODE', value)` | Target a specific test by `TestSiteCode`, allowing multiple tests to be updated in one rule | `result_set('tesA', 0.5)` |
-| `test_insert('CODE')` | Insert a test row by `TestSiteCode` if it doesn’t already exist for the order | `test_insert('HBA1C')` |
-| `test_delete('CODE')` | Remove a previously requested test from the current order when the rule deems it unnecessary | `test_delete('INS')` |
-| `comment_insert('text')` | Insert an order comment (`ordercom`) describing priority or clinical guidance | `comment_insert('Male patient - review')` |
-| `nothing` | Explicit no-op to terminate an action chain | `nothing` |
+| Action | Meaning | Example |
+|--------|---------|---------|
+| `result_set(value)` | Set current-context result (deprecated style) | `result_set(0.5)` |
+| `result_set('CODE', value)` | Set result for a specific test code | `result_set('tesA', 0.5)` |
+| `test_insert('CODE')` | Insert test if missing | `test_insert('HBA1C')` |
+| `test_delete('CODE')` | Remove test from order | `test_delete('INS')` |
+| `comment_insert('text')` | Insert order comment | `comment_insert('Review required')` |
+| `nothing` | No operation | `nothing` |
 
-> **Note:** `set_priority()` was removed. Use `comment_insert()` for priority notes without altering billing.
+`set_priority()` is removed; use `comment_insert()` when you need to record priority notes.
 
-## Runtime Requirements
+---
 
-1. **Compiled expression required:** Rules without `ConditionExprCompiled` are ignored (see `RuleEngineService::run`).
-2. **Order context:** `context.order.InternalOID` must exist for any action that writes to `patres` or `ordercom`.
-3. **TestSiteID:** `result_set()` needs `testSiteID` (either provided in context or from `order.TestSiteID`). When you provide a `TestSiteCode` as the first argument (`result_set('tesA', value)`), the engine resolves that code before writing the result. `test_insert()` resolves a `TestSiteID` via the `TestSiteCode` in `TestDefSiteModel`, and `test_delete()` removes the matching `TestSiteID` rows when needed.
-4. **Requested check:** `requested('CODE')` inspects `patres` rows for the same `OrderID` and `TestSiteCode`.
+## Example API Contract
 
-## Examples
-
-```
-if(sex('M'); result_set('tesA', 0.5):result_set('tesB', 1.2); result_set('tesA', 0.6):result_set('tesB', 1.0))
-```
-Sets both `tesA`/`tesB` results together per branch.
-
-```
-if(requested('GLU'); test_insert('HBA1C'):test_insert('INS'); nothing)
-```
-Adds new tests when glucose is already requested.
-
-```
-if(sex('M') && age > 40; result_set(1.2); result_set(1.0))
-```
-
-```
-if((sex('M') && age > 40) || (sex('F') && age > 50); result_set(1.5); result_set(1.0))
-```
-
-```
-if(priority('S'); result_set('URGENT'):test_insert('STAT_TEST'); result_set('NORMAL'))
-```
-
-```
-if(sex('M') && age > 40; result_set(1.5):test_insert('EXTRA_TEST'):comment_insert('Male over 40'); nothing)
-```
-
-```
-if(sex('F') && (age >= 18 && age <= 50) && priority('S'); result_set('HIGH_PRIO'):comment_insert('Female stat 18-50'); result_set('NORMAL'))
-```
-
-```
-if(requested('GLU'); test_delete('INS'):comment_insert('Duplicate insulin request removed'); nothing)
-```
-
-## API Usage
-
-### Compile DSL
-
-Validates the DSL and returns a compiled JSON structure that should be persisted in `ConditionExprCompiled`.
+### 1) Compile DSL
 
 ```http
 POST /api/rule/compile
 Content-Type: application/json
+```
 
+Purpose: Validate DSL and return compiled JSON for `ConditionExprCompiled`.
+
+Request example:
+
+```json
 {
   "expr": "if(sex('M'); result_set(0.5); result_set(0.6))"
 }
 ```
 
-The response contains `raw`, `compiled`, and `conditionExprCompiled` fields; store the JSON payload in `ConditionExprCompiled` before saving the rule.
+Success response example:
 
-### Evaluate Expression (Validation)
+```json
+{
+  "status": "success",
+  "data": {
+    "raw": "if(sex('M'); result_set(0.5); result_set(0.6))",
+    "compiled": {
+      "conditionExpr": "sex('M')",
+      "then": [{ "type": "result_set", "args": [0.5] }],
+      "else": [{ "type": "result_set", "args": [0.6] }]
+    },
+    "conditionExprCompiled": "{...json string...}"
+  }
+}
+```
 
-This endpoint simply evaluates an expression against a runtime context. It does not compile DSL or persist the result.
+Error response example:
+
+```json
+{
+  "status": "error",
+  "message": "Invalid expression near ';'",
+  "data": null
+}
+```
+
+### 2) Validate Expression Against Context
 
 ```http
 POST /api/rule/validate
 Content-Type: application/json
+```
 
+Purpose: Evaluate an expression with context only (no compile, no persistence).
+
+Request example:
+
+```json
 {
   "expr": "order[\"Age\"] > 18",
   "context": {
@@ -186,12 +159,29 @@ Content-Type: application/json
 }
 ```
 
-### Create Rule (example)
+Success response example:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "result": true
+  }
+}
+```
+
+### 3) Create Rule
 
 ```http
 POST /api/rule
 Content-Type: application/json
+```
 
+Purpose: Save rule metadata, DSL, compiled payload, and linked tests.
+
+Request example:
+
+```json
 {
   "RuleCode": "RULE_001",
   "RuleName": "Sex-based result",
@@ -202,89 +192,32 @@ Content-Type: application/json
 }
 ```
 
-## Database Schema
+Success response example:
 
-### Tables
-
-- **ruledef** – stores rule metadata, raw DSL, and compiled JSON.
-- **testrule** – mapping table that links rules to tests via `TestSiteID`.
-- **ruleaction** – deprecated. Actions are now embedded in `ConditionExprCompiled`.
-
-### Key Columns
-
-| Column | Table | Description |
-|--------|-------|-------------|
-| `EventCode` | ruledef | The trigger event (typically `test_created` or `result_updated`). |
-| `ConditionExpr` | ruledef | Raw DSL expression (semicolon syntax). |
-| `ConditionExprCompiled` | ruledef | JSON payload consumed at runtime (`then`, `else`, etc.). |
-| `ActionType` / `ActionParams` | ruleaction | Deprecated; actions live in compiled JSON now. |
-
-## Best Practices
-
-1. Always run `POST /api/rule/compile` before persisting a rule so `ConditionExprCompiled` exists.
-2. Link each rule to the relevant tests via `testrule.TestSiteID`—rules are scoped to linked tests.
-3. Use multi-action (`:`) to bundle several actions in a single branch; finish the branch with `nothing` if no further work is needed.
-4. Prefer `comment_insert()` over the removed `set_priority()` action when documenting priority decisions.
-5. Group complex boolean logic with parentheses for clarity when mixing `&&` and `||`.
-6. Use `requested('CODE')` responsibly; it performs a database lookup on `patres` so avoid invoking it in high-frequency loops without reason.
-
-## Migration Guide
-
-### Syntax Changes (v2.0)
-
-The DSL moved from ternary (`condition ? action : action`) to semicolon syntax. Existing rules must be migrated via the provided script.
-
-| Old Syntax | New Syntax |
-|------------|------------|
-| `if(condition ? action : action)` | `if(condition; action; action)` |
-
-#### Migration Examples
-
-```
-# BEFORE
-if(sex('M') ? result_set(0.5) : result_set(0.6))
-
-# AFTER
-if(sex('M'); result_set(0.5); result_set(0.6))
+```json
+{
+  "status": "success",
+  "message": "Rule created",
+  "data": {
+    "RuleCode": "RULE_001"
+  }
+}
 ```
 
-```
-# BEFORE
-if(sex('F') ? set_priority('S') : nothing)
+---
 
-# AFTER
-if(sex('F'); comment_insert('Female patient - review priority'); nothing)
-```
+## Minimal End-to-End Flow
 
-#### Migration Process
+1. Compile DSL with `/api/rule/compile`.
+2. Store returned `conditionExprCompiled` in `ruledef.ConditionExprCompiled`.
+3. Create rule and link `TestSiteIDs` via `/api/rule`.
+4. Trigger event (`test_created` or `result_updated`) and verify actions ran.
 
-Run the migration which:
+---
 
-1. Converts ternary syntax to semicolon syntax.
-2. Recompiles every expression into JSON so the engine consumes `ConditionExprCompiled` directly.
-3. Eliminates reliance on the `ruleaction` table.
+## Runtime Requirements (Quick Check)
 
-```bash
-php spark migrate
-```
-
-## Troubleshooting
-
-### Rule Not Executing
-
-1. Ensure the rule has a compiled payload (`ConditionExprCompiled`).
-2. Confirm the rule is linked to the relevant `TestSiteID` in `testrule`.
-3. Verify the `EventCode` matches the currently triggered event (`test_created` or `result_updated`).
-4. Check that `EndDate IS NULL` for both `ruledef` and `testrule` (soft deletes disable execution).
-5. Use `/api/rule/compile` to validate the DSL and view errors.
-
-### Invalid Expression
-
-1. POST the expression to `/api/rule/compile` to get a detailed compilation error.
-2. If using `/api/rule/validate`, supply the expected `context` payload; the endpoint simply evaluates the expression without saving it.
-
-### Runtime Errors
-
-- `RESULT_SET requires context.order.InternalOID` or `testSiteID`: include those fields in the context passed to `RuleEngineService::run()`.
-- `TEST_INSERT` failures mean the provided `TestSiteCode` does not exist or the rule attempted to insert a duplicate test; check `testdefsite` and existing `patres` rows.
-- `COMMENT_INSERT requires comment`: ensure the action provides text.
+1. `ConditionExprCompiled` must be present.
+2. Rule must be linked to the target `TestSiteID`.
+3. Trigger event must match `EventCode`.
+4. Context must include required identifiers for write actions.
