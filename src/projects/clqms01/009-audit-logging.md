@@ -29,6 +29,11 @@ All log records should carry the same core metadata:
 - change details: `TblName`, `RecID`, `FldName`, `FldValuePrev`, `FldValueNew`
 - time/context: `LogDate`, optional `Context` JSON, optional `IpAddress`
 
+Field usage rule:
+
+- If exactly one field is updated, set `FldName` and use `FldValuePrev`/`FldValueNew`.
+- If more than one field is updated, keep `FldName` null and store the full diff in `Context`.
+
 ### Category Reference (Simplified)
 
 - **Patient (`logpatient`)**: register/update/merge, consent/insurance changes, ADT events
@@ -107,6 +112,167 @@ Error response example:
 }
 ```
 
+Multi-field change example (`Context.diff`):
+
+```json
+{
+  "request_id": "req_851637066fcce071",
+  "route": "POST /api/patient",
+  "timestamp_utc": "2026-04-01T08:41:17.347Z",
+  "entity_type": "patient",
+  "entity_version": 1,
+  "diff": [
+    {
+      "field": "PatientID",
+      "previous": null,
+      "new": "SMAJ3"
+    },
+    {
+      "field": "AlternatePID",
+      "previous": null,
+      "new": "ALTSMAJ3"
+    },
+    {
+      "field": "NameFirst",
+      "previous": null,
+      "new": "CIOMY"
+    },
+    {
+      "field": "Prefix",
+      "previous": null,
+      "new": "ALM"
+    },
+    {
+      "field": "Sex",
+      "previous": null,
+      "new": "1"
+    },
+    {
+      "field": "Religion",
+      "previous": null,
+      "new": "ISLAM"
+    },
+    {
+      "field": "NameMiddle",
+      "previous": null,
+      "new": "MD"
+    },
+    {
+      "field": "NameMaiden",
+      "previous": null,
+      "new": "MD"
+    },
+    {
+      "field": "MaritalStatus",
+      "previous": null,
+      "new": "S"
+    },
+    {
+      "field": "NameLast",
+      "previous": null,
+      "new": "CUANKI"
+    },
+    {
+      "field": "Ethnic",
+      "previous": null,
+      "new": "PPMLN"
+    },
+    {
+      "field": "PlaceOfBirth",
+      "previous": null,
+      "new": "JKT"
+    },
+    {
+      "field": "Race",
+      "previous": null,
+      "new": "NTBOR"
+    },
+    {
+      "field": "Birthdate",
+      "previous": null,
+      "new": "2026-03-01"
+    },
+    {
+      "field": "Citizenship",
+      "previous": null,
+      "new": "WNI"
+    },
+    {
+      "field": "Street_1",
+      "previous": null,
+      "new": "S1"
+    },
+    {
+      "field": "City",
+      "previous": null,
+      "new": "189"
+    },
+    {
+      "field": "Street_2",
+      "previous": null,
+      "new": "S2"
+    },
+    {
+      "field": "Province",
+      "previous": null,
+      "new": "11"
+    },
+    {
+      "field": "Street_3",
+      "previous": null,
+      "new": "S3"
+    },
+    {
+      "field": "ZIP",
+      "previous": null,
+      "new": 12345
+    },
+    {
+      "field": "Country",
+      "previous": null,
+      "new": "IDN"
+    },
+    {
+      "field": "EmailAddress1",
+      "previous": null,
+      "new": "M11@GM.COM"
+    },
+    {
+      "field": "Phone",
+      "previous": null,
+      "new": "08976746473"
+    },
+    {
+      "field": "EmailAddress2",
+      "previous": null,
+      "new": "M22@GM.COM"
+    },
+    {
+      "field": "MobilePhone",
+      "previous": null,
+      "new": "08975664747"
+    },
+    {
+      "field": "DeathIndicator",
+      "previous": null,
+      "new": "N"
+    },
+    {
+      "field": "LinkTo",
+      "previous": null,
+      "new": "2"
+    },
+    {
+      "field": "Custodian",
+      "previous": null,
+      "new": 1
+    }
+  ],
+  "patient_id": "SMAJ3",
+  "validation_profile": "patient.create"
+}
+```
+
 ### 2) Query Audit Logs
 
 ```http
@@ -144,6 +310,7 @@ Success response example:
 ## Capture Rules (Short)
 
 - Always include `UserID`, `SessionID`, `SiteID`, `EventID`, `ActivityID`, and `LogDate`.
+- For single-field updates, use `FldName` with `FldValuePrev` and `FldValueNew`.
 - For multi-field updates, keep `FldName` null and store the diff in `Context`.
 - Do not log secrets/tokens; mask sensitive values in payloads.
 - For system-driven actions, use `UserID = SYSTEM` (or null) and explain in `Context`.
