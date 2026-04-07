@@ -26,5 +26,9 @@
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
     "tailwindcss": "^4.1.18"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.1",
+    "markdown-it-mermaid": "^0.2.5"
   }
 }

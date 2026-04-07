@@ -1,3 +1,6 @@
+const markdownIt = require("markdown-it");
+const markdownItMermaid = require("markdown-it-mermaid");
+
 module.exports = function (eleventyConfig) {
   // Passthrough copy for static assets
   eleventyConfig.addPassthroughCopy("src/assets");
@@ -54,6 +57,16 @@ module.exports = function (eleventyConfig) {
     return array.slice(0, n);
   });
 
+  // Markdown: enable Mermaid diagrams
+  const mermaidPlugin = markdownItMermaid.default || markdownItMermaid;
+  const markdownLib = markdownIt({
+    html: true,
+    breaks: false,
+    linkify: true
+  }).use(mermaidPlugin);
+
+  eleventyConfig.setLibrary("md", markdownLib);
+
   // Collections
   // Blog posts / Proposals collection
   eleventyConfig.addCollection("posts", function (collectionApi) {
@@ -62,12 +75,13 @@ module.exports = function (eleventyConfig) {
     });
   });
 
-  // Projects collection (blog posts + CLQMS projects)
+  // Projects collection (blog posts + CLQMS + TinyLink)
   eleventyConfig.addCollection("projects", function (collectionApi) {
     const blogPosts = collectionApi.getFilteredByGlob("src/blog/**/*.md");
     const clqmsPosts = collectionApi.getFilteredByTag("clqms");
+    const tinylinkPosts = collectionApi.getFilteredByTag("tinylink");
 
-    const allProjects = [...blogPosts, ...clqmsPosts].sort((a, b) => {
+    const allProjects = [...blogPosts, ...clqmsPosts, ...tinylinkPosts].sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     });
 
@@ -77,6 +91,13 @@ module.exports = function (eleventyConfig) {
   // CLQMS collection sorted by order
   eleventyConfig.addCollection("clqms", function (collectionApi) {
     return collectionApi.getFilteredByTag("clqms").sort((a, b) => {
+      return (Number(a.data.order) ?? 99) - (Number(b.data.order) ?? 99);
+    });
+  });
+
+  // TinyLink collection sorted by order
+  eleventyConfig.addCollection("tinylink", function (collectionApi) {
+    return collectionApi.getFilteredByTag("tinylink").sort((a, b) => {
       return (Number(a.data.order) ?? 99) - (Number(b.data.order) ?? 99);
     });
   });

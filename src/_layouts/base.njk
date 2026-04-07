@@ -52,6 +52,7 @@
                 <summary>Projects</summary>
                 <ul>
                   <li><a href="/projects/clqms01/" class="{% if '/projects/clqms01/' in page.url %}text-primary font-medium{% endif %}">CLQMS</a></li>
+                  <li><a href="/projects/tinylink/001-design/" class="{% if '/projects/tinylink/' in page.url %}text-primary font-medium{% endif %}">TinyLink</a></li>
                 </ul>
               </details>
             </li>
@@ -88,6 +89,11 @@
                 <li>
                   <a href="/projects/clqms01/" class="{% if '/projects/clqms01/' in page.url %}text-primary bg-primary/10{% endif %} hover:text-primary hover:bg-primary/10">
                     <span class="mr-2">🏥</span>CLQMS
+                  </a>
+                </li>
+                <li>
+                  <a href="/projects/tinylink/001-design/" class="{% if '/projects/tinylink/' in page.url %}text-primary bg-primary/10{% endif %} hover:text-primary hover:bg-primary/10">
+                    <span class="mr-2">🔗</span>TinyLink
                   </a>
                 </li>
               </ul>
@@ -153,6 +159,16 @@
         <p class="text-sm text-base-content/40">&copy; {% year %} 5Panda. Built with 11ty & Tailwind CSS.</p>
       </aside>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+      (function () {
+        const diagrams = document.querySelectorAll('.mermaid');
+        if (!diagrams.length || !window.mermaid) return;
+
+        mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' });
+        mermaid.run({ nodes: diagrams });
+      })();
+    </script>
     <!-- Theme toggle script -->
     <script>
       document.getElementById('theme-toggle').addEventListener('click', function () {
